@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/ProjectTestTask.Tests/ProjectTestTask.Tests.csproj" />
+  </Folder>
+  <Project Path="Inventory.Api/Inventory.Api.csproj" />
+  <Project Path="Notifications.Worker/Notifications.Worker.csproj" />
+  <Project Path="Trades.Api/Trades.Api.csproj" />
+</Solution>

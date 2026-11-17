@@ -1,0 +1,74 @@
+
+name: Acceptance Validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  api-tests:
+    name: API tests without Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.404'
+
+      - name: Run default tests
+        run: |
+          dotnet test ProjectTestTask.slnx \
+            --logger "console;verbosity=normal"
+
+  infrastructure-tests:
+    name: Full acceptance tests with Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    env:
+      ACCEPT_EULA: "Y"
+      RUN_ACCEPTANCE_TESTS: "1"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.404'
+
+      - name: Generate temporary SQL password
+        shell: bash
+        run: |
+          password="Sql!A9$(openssl rand -hex 16)"
+          echo "::add-mask::$password"
+          echo "MSSQL_SA_PASSWORD=$password" >> "$GITHUB_ENV"
+
+      - name: Validate Docker Compose
+        run: docker compose config -q
+
+      - name: Start containers
+        run: docker compose up -d --wait --wait-timeout 300
+
+      - name: Run acceptance tests
+        run: |
+          dotnet test ProjectTestTask.slnx \
+            --logger "console;verbosity=normal"
+
+      - name: Show container status
+        if: always()
+        run: docker compose ps -a
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down -v

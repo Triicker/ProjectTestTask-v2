@@ -4,7 +4,7 @@ namespace ProjectTestTask.Tests;
 
 public class EnvironmentTests
 {
-    [Fact]
+    [AcceptanceFact]
     [Trait("Criterion", "0")]
     public async Task Dotnet10_ShouldBeAvailable()
     {
@@ -13,7 +13,7 @@ public class EnvironmentTests
         Assert.StartsWith("10.", version);
     }
 
-    [Fact]
+    [AcceptanceFact]
     [Trait("Criterion", "0")]
     public async Task DockerDaemon_ShouldRespond()
     {

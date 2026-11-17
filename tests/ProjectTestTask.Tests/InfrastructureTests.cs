@@ -7,7 +7,7 @@ namespace ProjectTestTask.Tests;
 
 public class InfrastructureTests
 {
-    [Fact]
+    [AcceptanceFact]
     [Trait("Criterion", "1")]
     public async Task MongoDB_ShouldBeHealthy()
     {
@@ -38,7 +38,7 @@ public class InfrastructureTests
         Assert.Equal("1", ping.Trim());
     }
 
-    [Fact]
+    [AcceptanceFact]
     [Trait("Criterion", "1")]
     public async Task ServiceBus_ShouldBeHealthy()
     {
